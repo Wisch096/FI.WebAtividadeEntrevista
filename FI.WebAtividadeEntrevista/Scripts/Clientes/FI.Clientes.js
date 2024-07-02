@@ -7,7 +7,7 @@ $(document).ready(function () {
             method: "POST",
             data: {
                 "NOME": $(this).find("#Nome").val(),
-                "CPF": $(this).find("#CPF").val().replace(),
+                "CPF": $(this).find("#CPF").val().replace(/\D/g, ''),
                 "CEP": $(this).find("#CEP").val(),
                 "Email": $(this).find("#Email").val(),
                 "Sobrenome": $(this).find("#Sobrenome").val(),
