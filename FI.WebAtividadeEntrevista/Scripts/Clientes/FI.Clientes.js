@@ -7,7 +7,7 @@ $(document).ready(function () {
             method: "POST",
             data: {
                 "NOME": $(this).find("#Nome").val(),
-                "CPF": $(this).find("#CPF").val(),
+                "CPF": $(this).find("#CPF").val().replace(),
                 "CEP": $(this).find("#CEP").val(),
                 "Email": $(this).find("#Email").val(),
                 "Sobrenome": $(this).find("#Sobrenome").val(),
@@ -30,7 +30,21 @@ $(document).ready(function () {
                 $("#formCadastro")[0].reset();
             }
         });
-    })
+    });
+
+    $('#CPF').on('input', function() {
+        var cpf = $(this).val();
+        
+        cpf = cpf.replace(/\D/g, '');
+        
+        if (cpf.length <= 11) {
+            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
+            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
+            cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        }
+        
+        $(this).val(cpf);
+    });
     
 })
 
