@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using FI.WebAtividadeEntrevista.Validations;
 
 namespace WebAtividadeEntrevista.Models
 {
@@ -18,6 +19,13 @@ namespace WebAtividadeEntrevista.Models
         /// </summary>
         [Required]
         public string CEP { get; set; }
+        
+        /// <summary>
+        /// CPF
+        /// </summary>
+        [Required]
+        [CPFValidation]
+        public string CPF { get; set; }
 
         /// <summary>
         /// Cidade
