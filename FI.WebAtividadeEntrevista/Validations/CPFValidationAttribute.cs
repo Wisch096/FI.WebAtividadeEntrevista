@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using FI.AtividadeEntrevista.BLL;
 
 namespace FI.WebAtividadeEntrevista.Validations
 {
@@ -7,8 +8,13 @@ namespace FI.WebAtividadeEntrevista.Validations
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
+            var bo = new BoCliente();
+            
             var cpf = value as string;
-
+            
+            if (bo.VerificarExistencia(cpf))
+                return new ValidationResult("CPF já existe na base de dados.");
+            
             if (string.IsNullOrEmpty(cpf))
                 return new ValidationResult("CPF é obrigatório.");
             
