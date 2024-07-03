@@ -38,7 +38,6 @@ namespace WebAtividadeEntrevista.Controllers
             }
             else
             {
-                
                 model.Id = bo.Incluir(new Cliente()
                 {                    
                     CEP = model.CEP,
@@ -52,9 +51,7 @@ namespace WebAtividadeEntrevista.Controllers
                     Sobrenome = model.Sobrenome,
                     Telefone = model.Telefone
                 });
-
-           
-                return Json("Cadastro efetuado com sucesso");
+                return Json(new { mensagem = "Cadastro efetuado com sucesso", clienteId = model.Id });
             }
         }
 
@@ -89,7 +86,7 @@ namespace WebAtividadeEntrevista.Controllers
                     Telefone = model.Telefone
                 });
                                
-                return Json("Cadastro alterado com sucesso");
+                return Json(new { mensagem = "Cadastro alterado com sucesso", clienteId = model.Id });
             }
         }
 
@@ -114,12 +111,10 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = cliente.Nacionalidade,
                     Nome = cliente.Nome,
                     Sobrenome = cliente.Sobrenome,
-                    Telefone = cliente.Telefone
+                    Telefone = cliente.Telefone,
+                    Beneficiarios = cliente.Beneficiarios
                 };
-
-            
             }
-
             return View(model);
         }
 
@@ -149,5 +144,68 @@ namespace WebAtividadeEntrevista.Controllers
                 return Json(new { Result = "ERROR", Message = ex.Message });
             }
         }
+        
+        [HttpPost]
+        public JsonResult IncluirBeneficiario(int clienteId, List<BeneficiariosModel> beneficiarios)
+        {
+            BoBeneficiario bo = new BoBeneficiario();
+
+            foreach (var model in beneficiarios)
+            {
+                if (!ModelState.IsValid)
+                {
+                    List<string> erros = (from item in ModelState.Values
+                        from error in item.Errors
+                        select error.ErrorMessage).ToList();
+
+                    Response.StatusCode = 400;
+                    return Json(string.Join(Environment.NewLine, erros));
+                }
+                else
+                {
+                    model.IdCliente = clienteId; 
+                    
+                    model.Id = bo.Incluir(new Beneficiario()
+                    {
+                        Nome = model.Nome,
+                        CPF = model.CPF,
+                        IdCliente = model.IdCliente 
+                    });
+                }
+            }
+            return Json("Cadastro de beneficiários efetuado com sucesso");
+        }
+        
+        [HttpPost]
+        public JsonResult AlterarBeneficiario(int clienteId, List<BeneficiariosModel> beneficiarios)
+        {
+            BoBeneficiario bo = new BoBeneficiario();
+
+            foreach (var model in beneficiarios)
+            {
+                if (!ModelState.IsValid)
+                {
+                    List<string> erros = (from item in ModelState.Values
+                        from error in item.Errors
+                        select error.ErrorMessage).ToList();
+
+                    Response.StatusCode = 400;
+                    return Json(string.Join(Environment.NewLine, erros));
+                }
+                else
+                {
+                    model.IdCliente = clienteId; 
+                    
+                    model.Id = bo.Incluir(new Beneficiario()
+                    {
+                        Nome = model.Nome,
+                        CPF = model.CPF,
+                        IdCliente = model.IdCliente 
+                    });
+                }
+            }
+            return Json("Cadastro de beneficiários efetuado com sucesso");
+        }
+        
     }
 }
