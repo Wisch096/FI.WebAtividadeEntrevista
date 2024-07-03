@@ -63,7 +63,8 @@ namespace FI.AtividadeEntrevista.DAL
             return ds.Tables[0].Rows.Count > 0;
         }
 
-        internal List<Cliente> Pesquisa(int iniciarEm, int quantidade, string campoOrdenacao, bool crescente, out int qtd)
+        internal List<Cliente> Pesquisa(int iniciarEm, int quantidade, string campoOrdenacao, bool crescente,
+            out int qtd)
         {
             List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
 
@@ -142,21 +143,54 @@ namespace FI.AtividadeEntrevista.DAL
             List<DML.Cliente> lista = new List<DML.Cliente>();
             if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
+                long currentClienteId = -1;
+                DML.Cliente currentCliente = null;
+
+                bool hasBeneficiarios = ds.Tables[0].Columns.Contains("CPF_Beneficiario") &&
+                                        ds.Tables[0].Columns.Contains("Nome_Beneficiario");
+
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
-                    DML.Cliente cli = new DML.Cliente();
-                    cli.Id = row.Field<long>("Id");
-                    cli.CEP = row.Field<string>("CEP");
-                    cli.CPF = row.Field<string>("CPF");
-                    cli.Cidade = row.Field<string>("Cidade");
-                    cli.Email = row.Field<string>("Email");
-                    cli.Estado = row.Field<string>("Estado");
-                    cli.Logradouro = row.Field<string>("Logradouro");
-                    cli.Nacionalidade = row.Field<string>("Nacionalidade");
-                    cli.Nome = row.Field<string>("Nome");
-                    cli.Sobrenome = row.Field<string>("Sobrenome");
-                    cli.Telefone = row.Field<string>("Telefone");
-                    lista.Add(cli);
+                    long clienteId = row.Field<long>("Id");
+                    if (clienteId != currentClienteId)
+                    {
+                        if (currentCliente != null)
+                        {
+                            lista.Add(currentCliente);
+                        }
+
+                        currentCliente = new DML.Cliente()
+                        {
+                            Id = clienteId,
+                            CEP = row.Field<string>("CEP"),
+                            CPF = row.Field<string>("CPF"),
+                            Cidade = row.Field<string>("Cidade"),
+                            Email = row.Field<string>("Email"),
+                            Estado = row.Field<string>("Estado"),
+                            Logradouro = row.Field<string>("Logradouro"),
+                            Nacionalidade = row.Field<string>("Nacionalidade"),
+                            Nome = row.Field<string>("Nome"),
+                            Sobrenome = row.Field<string>("Sobrenome"),
+                            Telefone = row.Field<string>("Telefone"),
+                            Beneficiarios = new List<DML.Beneficiario>()
+                        };
+                        currentClienteId = clienteId;
+                    }
+
+                    if (hasBeneficiarios && !row.IsNull("CPF_Beneficiario") && !row.IsNull("Nome_Beneficiario"))
+                    {
+                        DML.Beneficiario beneficiario = new DML.Beneficiario()
+                        {
+                            CPF = row.Field<string>("CPF_Beneficiario"),
+                            Nome = row.Field<string>("Nome_Beneficiario")
+                        };
+                        currentCliente.Beneficiarios.Add(beneficiario);
+                    }
+                }
+
+                if (currentCliente != null)
+                {
+                    lista.Add(currentCliente);
                 }
             }
 
