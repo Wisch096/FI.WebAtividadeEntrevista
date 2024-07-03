@@ -1,5 +1,8 @@
 ﻿
 $(document).ready(function () {
+    let beneficiarios = [];
+    let clienteId = null;
+    
     if (obj) {
         $('#formCadastro #Nome').val(obj.Nome);
         $('#formCadastro #CEP').val(obj.CEP);
@@ -11,11 +14,46 @@ $(document).ready(function () {
         $('#formCadastro #Cidade').val(obj.Cidade);
         $('#formCadastro #Logradouro').val(obj.Logradouro);
         $('#formCadastro #Telefone').val(obj.Telefone);
-    }
 
+        obj.Beneficiarios.forEach(function (beneficiario) {
+            var newRow = '<tr>' +
+                '<td>' + beneficiario.CPF + '</td>' +
+                '<td>' + beneficiario.Nome + '</td>' +
+                '<td>' +
+                '<button class="btn btn-primary">Alterar</button> ' +
+                '<button class="btn btn-danger">Excluir</button>' +
+                '</td>' +
+                '</tr>';
+
+            $('.table tbody').append(newRow);
+        });
+    }
+    
+    $('#formCadastroBenef').submit(function (e) {
+        e.preventDefault();
+
+        var cpf = $('#CPFBeneficiario').val().replace(/\D/g, '');
+        var nome = $('#NomeBeneficiario').val();
+
+        beneficiarios.push({
+            CPF: cpf,
+            Nome: nome
+        });
+
+        var newRow = '<tr>' +
+            '<td>' + cpf + '</td>' +
+            '<td>' + nome + '</td>' +
+            '<td>' +
+            '<button class="btn btn-primary">Alterar</button> ' +
+            '<button class="btn btn-danger">Excluir</button>' +
+            '</td>' +
+            '</tr>';
+        console.log(beneficiarios)
+        $('.table tbody').append(newRow);
+    });
+    
     $('#formCadastro').submit(function (e) {
         e.preventDefault();
-        
         $.ajax({
             url: urlPost,
             method: "POST",
@@ -40,13 +78,40 @@ $(document).ready(function () {
             },
             success:
             function (r) {
+                console.log("response", r)
                 ModalDialog("Sucesso!", r)
-                $("#formCadastro")[0].reset();                                
-                window.location.href = urlRetorno;
+                $("#formCadastro")[0].reset();
+                clienteId = r.clienteId;
+                console.log("dentro de success", beneficiarios, clienteId)
+                $.ajax({
+                    url: urlPostBeneficiario,
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        clienteId: clienteId,
+                        beneficiarios: beneficiarios
+                    }),
+                    error: function (r) {
+                        console.log("Erro no cadastro dos beneficiários", r);
+                        console.log("Estado da requisição:", r.readyState);
+                        console.log("Status:", r.status);
+                        console.log("Resposta:", r.responseText);
+                        console.log("Cabeçalhos:", r.getAllResponseHeaders());
+                        if (r.status == 400) {
+                            ModalDialog("Ocorreu um erro", r.responseJSON);
+                        } else if (r.status == 500) {
+                            ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
+                        }
+                    },
+                    success: function (r) {
+                        console.log("Beneficiários cadastrados com sucesso", r);
+                        $('.table tbody').empty();
+                        beneficiarios = [];
+                    }
+                });
             }
         });
     })
-    
 })
 
 function ModalDialog(titulo, texto) {

@@ -183,17 +183,6 @@ namespace WebAtividadeEntrevista.Controllers
 
             foreach (var model in beneficiarios)
             {
-                if (!ModelState.IsValid)
-                {
-                    List<string> erros = (from item in ModelState.Values
-                        from error in item.Errors
-                        select error.ErrorMessage).ToList();
-
-                    Response.StatusCode = 400;
-                    return Json(string.Join(Environment.NewLine, erros));
-                }
-                else
-                {
                     model.IdCliente = clienteId; 
                     
                     model.Id = bo.Incluir(new Beneficiario()
@@ -202,10 +191,9 @@ namespace WebAtividadeEntrevista.Controllers
                         CPF = model.CPF,
                         IdCliente = model.IdCliente 
                     });
-                }
             }
             return Json("Cadastro de beneficiários efetuado com sucesso");
         }
-        
+      
     }
 }

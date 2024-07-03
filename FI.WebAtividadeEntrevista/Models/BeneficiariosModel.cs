@@ -17,7 +17,6 @@ namespace WebAtividadeEntrevista.Models
         /// CPF
         /// </summary>
         [Required]
-        [CPFValidation]
         public string CPF { get; set; }
 
         /// <summary>

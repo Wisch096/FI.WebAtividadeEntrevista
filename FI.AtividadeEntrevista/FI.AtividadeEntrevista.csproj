@@ -62,6 +62,7 @@
     <Content Include="DAL\Clientes\Procedures\FI_SP_DelCliente.sql" />
     <Content Include="DAL\Clientes\Procedures\FI_SP_IncCliente.sql" />
     <Content Include="DAL\Clientes\Procedures\FI_SP_PesqCliente.sql" />
+    <Content Include="DAL\Clientes\Procedures\FI_SP_VerificaCliente.sql" />
     <Content Include="DAL\Clientes\SQL\NovoCampoCPF.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

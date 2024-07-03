@@ -1,5 +1,7 @@
-﻿
-$(document).ready(function () {
+﻿$(document).ready(function () {
+    let beneficiarios = [];
+    let clienteId = null;
+
     $('#formCadastro').submit(function (e) {
         e.preventDefault();
         $.ajax({
@@ -18,34 +20,80 @@ $(document).ready(function () {
                 "Telefone": $(this).find("#Telefone").val()
             },
             error:
-            function (r) {
-                if (r.status == 400)
-                    ModalDialog("Ocorreu um erro", r.responseJSON);
-                else if (r.status == 500)
-                    ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
-            },
+                function (r) {
+                    if (r.status == 400)
+                        ModalDialog("Ocorreu um erro", r.responseJSON);
+                    else if (r.status == 500)
+                        ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
+                },
             success:
-            function (r) {
-                ModalDialog("Sucesso!", r)
-                $("#formCadastro")[0].reset();
-            }
+                function (r) {
+                    console.log(r.clienteId)
+                    ModalDialog("Sucesso!", r.mensagem)
+                    clienteId = r.clienteId;
+                    $("#formCadastro")[0].reset();
+                    $.ajax({
+                        url: urlPostBeneficiario,
+                        method: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            clienteId: clienteId,
+                            beneficiarios: beneficiarios
+                        }),
+                        error: function (r) {
+                            if (r.status == 400)
+                                ModalDialog("Ocorreu um erro", r.responseJSON);
+                            else if (r.status == 500)
+                                ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
+                        },
+                        success: function (r) {
+                            $('.table tbody').empty();
+                            beneficiarios = [];
+                        }
+                    });
+                }
         });
     });
 
-    $('#CPF').on('input', function() {
+    $('#formCadastroBenef').submit(function (e) {
+        e.preventDefault();
+
+        var cpf = $('#CPFBeneficiario').val().replace(/\D/g, '');
+        var nome = $('#NomeBeneficiario').val();
+
+        beneficiarios.push({
+            CPF: cpf,
+            Nome: nome
+        });
+
+        var newRow = '<tr>' +
+            '<td>' + cpf + '</td>' +
+            '<td>' + nome + '</td>' +
+            '<td>' +
+            '<button class="btn btn-primary">Alterar</button> ' +
+            '<button class="btn btn-danger">Excluir</button>' +
+            '</td>' +
+            '</tr>';
+
+        $('.table tbody').append(newRow);
+        $("#formCadastroBenef")[0].reset();
+
+    });
+
+    $('#CPF').on('input', function () {
         var cpf = $(this).val();
-        
+
         cpf = cpf.replace(/\D/g, '');
-        
+
         if (cpf.length <= 11) {
             cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
             cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
             cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
         }
-        
+
         $(this).val(cpf);
     });
-    
+
 })
 
 function ModalDialog(titulo, texto) {
