@@ -80,7 +80,26 @@
 
     });
 
-    $('#CPF').on('input', function () {
+    $(document).on('click', '.btn-danger', function (e) {
+        e.preventDefault();
+        var beneficiarioId = $(this).data('id');
+        console.log(urlDeleteBeneficiario)
+        console.log(urlPost)
+        $.ajax({
+            url: urlDeleteBeneficiario,
+            type: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify({id: beneficiarioId}),
+            success: function (response) {
+                ModalDialog("Sucesso", "Beneficiário excluído.");
+            }.bind(this),
+            error: function (xhr, status, error) {
+                ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
+            }
+        });
+    });
+
+    $('#CPF', '#CPFBeneficiario').on('input', function () {
         var cpf = $(this).val();
 
         cpf = cpf.replace(/\D/g, '');
