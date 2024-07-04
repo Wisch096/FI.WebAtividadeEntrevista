@@ -102,20 +102,25 @@
 
     $('#CPF').on('input', function () {
         var cpf = $(this).val();
-
-        cpf = cpf.replace(/\D/g, '');
-
-        if (cpf.length <= 11) {
-            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
-            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
-            cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-        }
-
-        $(this).val(cpf);
+        $(this).val(formatarCPF(cpf));
     });
-    
+
+    $('#CPFBeneficiario').on('input', function () {
+        var cpf = $(this).val();
+        $(this).val(formatarCPF(cpf));
+    });
 
 })
+
+function formatarCPF(cpf) {
+    cpf = cpf.replace(/\D/g, '');
+    if (cpf.length <= 11) {
+        cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
+        cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
+        cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    }
+    return cpf;
+}
 
 function ModalDialog(titulo, texto) {
     var random = Math.random().toString().replace('.', '');
