@@ -26,41 +26,27 @@ namespace FI.AtividadeEntrevista.DAL
             return ret;
         }
         
-        /// <summary>
-        /// Inclui um novo cliente
-        /// </summary>
-        /// <param name="cliente">Objeto de cliente</param>
-        internal void Alterar(DML.Cliente cliente)
+        internal void Alterar(DML.Beneficiario beneficiario)
         {
             List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
-
-            parametros.Add(new System.Data.SqlClient.SqlParameter("Nome", cliente.Nome));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("Sobrenome", cliente.Sobrenome));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("CPF", cliente.CPF));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("Nacionalidade", cliente.Nacionalidade));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("CEP", cliente.CEP));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("Estado", cliente.Estado));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("Cidade", cliente.Cidade));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("Logradouro", cliente.Logradouro));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("Email", cliente.Email));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("Telefone", cliente.Telefone));
-            parametros.Add(new System.Data.SqlClient.SqlParameter("ID", cliente.Id));
-
-            base.Executar("FI_SP_AltCliente", parametros);
+            parametros.Add(new System.Data.SqlClient.SqlParameter("Id", beneficiario.Id));
+            parametros.Add(new System.Data.SqlClient.SqlParameter("Nome", beneficiario.Nome));
+            parametros.Add(new System.Data.SqlClient.SqlParameter("CPF", beneficiario.CPF));
+            
+            base.Executar("FI_SP_AltBenef", parametros);
         }
-
-
+        
         /// <summary>
-        /// Excluir Cliente
+        /// Excluir Beneficiário
         /// </summary>
-        /// <param name="cliente">Objeto de cliente</param>
+        /// <param name="beneficiario">Objeto de beneficiário</param>
         internal void Excluir(long Id)
         {
             List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
 
             parametros.Add(new System.Data.SqlClient.SqlParameter("Id", Id));
 
-            base.Executar("FI_SP_DelCliente", parametros);
+            base.Executar("FI_SP_DelBenef", parametros);
         }
         
     }

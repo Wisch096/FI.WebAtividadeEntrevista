@@ -54,13 +54,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <Content Include="CamposNovos.sql" />
     <Content Include="DAL\Beneficiarios\Procedures\FI_SP_DelBenef.sql" />
     <Content Include="DAL\Beneficiarios\Procedures\FI_SP_IncBenef.sql" />
     <Content Include="DAL\Clientes\Procedures\FI_SP_AltCliente.sql" />
     <Content Include="DAL\Clientes\Procedures\FI_SP_ConsCliente.sql" />
     <Content Include="DAL\Clientes\Procedures\FI_SP_DelCliente.sql" />
     <Content Include="DAL\Clientes\Procedures\FI_SP_IncCliente.sql" />
+    <Content Include="DAL\Clientes\Procedures\FI_SP_ObterClientePorCpf.sql" />
     <Content Include="DAL\Clientes\Procedures\FI_SP_PesqCliente.sql" />
     <Content Include="DAL\Clientes\Procedures\FI_SP_VerificaCliente.sql" />
     <Content Include="DAL\Clientes\SQL\NovoCampoCPF.sql" />

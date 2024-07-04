@@ -62,6 +62,19 @@ namespace FI.AtividadeEntrevista.DAL
 
             return ds.Tables[0].Rows.Count > 0;
         }
+        
+        internal DML.Cliente ObterClientePorCpf(string CPF)
+        {
+            List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
+
+            parametros.Add(new System.Data.SqlClient.SqlParameter("CPF", CPF));
+
+            DataSet ds = base.Consultar("FI_SP_ObterClientePorCpf", parametros);
+
+            List<DML.Cliente> cli = Converter(ds);
+
+            return cli.FirstOrDefault();
+        }
 
         internal List<Cliente> Pesquisa(int iniciarEm, int quantidade, string campoOrdenacao, bool crescente,
             out int qtd)
@@ -181,6 +194,7 @@ namespace FI.AtividadeEntrevista.DAL
                     {
                         DML.Beneficiario beneficiario = new DML.Beneficiario()
                         {
+                            Id = row.Field<long>("ID_Beneficiario"),
                             CPF = row.Field<string>("CPF_Beneficiario"),
                             Nome = row.Field<string>("Nome_Beneficiario")
                         };
