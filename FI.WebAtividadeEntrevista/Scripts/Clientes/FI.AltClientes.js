@@ -15,7 +15,6 @@
         $('#formCadastro #Logradouro').val(obj.Logradouro);
         $('#formCadastro #Telefone').val(obj.Telefone);
 
-        console.log(obj.Beneficiarios);
         obj.Beneficiarios.forEach(function (beneficiario) {
             var newRow = '<tr>' +
                 '<td>' + beneficiario.CPF + '</td>' +
@@ -72,19 +71,13 @@
                         '<button class="btn btn-danger" data-id="' + new Date().getTime() + '">Excluir</button>' +
                         '</td>' +
                         '</tr>';
-
                     $('.table tbody').append(newRow);
 
                     editandoBeneficiarioId = null;
-                    console.log("Beneficiário atualizado com sucesso!");
-
+                    
                     $('#CPFBeneficiario').val('');
                     $('#NomeBeneficiario').val('');
-
-                    console.log("CPF na célula:", row.find('td').eq(0).text());
-                    console.log("Nome na célula:", row.find('td').eq(1).text());
                 },
-
                 error: function (xhr, status, error) {
                     alert("Ocorreu um erro ao tentar atualizar o beneficiário: " + error);
                 }
@@ -116,7 +109,8 @@
             contentType: "application/json",
             data: JSON.stringify({id: beneficiarioId}),
             success: function (response) {
-                ModalDialog("Sucesso", "Beneficiário excluído.");
+                ModalDialog("Sucesso", "Beneficiário excluído")
+                $(this).closest('tr').remove();
             }.bind(this),
             error: function (xhr, status, error) {
                 ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
@@ -177,7 +171,21 @@
         });
     });
 
-    $('#CPF', '#CPFBeneficiario').on('input', function () {
+    $('#CPF').on('input', function () {
+        var cpf = $(this).val();
+
+        cpf = cpf.replace(/\D/g, '');
+
+        if (cpf.length <= 11) {
+            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
+            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
+            cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        }
+
+        $(this).val(cpf);
+    });
+
+    $('#CPFBeneficiario').on('input', function () {
         var cpf = $(this).val();
 
         cpf = cpf.replace(/\D/g, '');

@@ -91,15 +91,16 @@
             contentType: "application/json",
             data: JSON.stringify({id: beneficiarioId}),
             success: function (response) {
-                ModalDialog("Sucesso", "Beneficiário excluído.");
-            }.bind(this),
+                ModalDialog("Sucesso", "Beneficiário excluído")
+                $(this).closest('tr').remove();            
+            },
             error: function (xhr, status, error) {
                 ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
             }
         });
     });
 
-    $('#CPF', '#CPFBeneficiario').on('input', function () {
+    $('#CPF').on('input', function () {
         var cpf = $(this).val();
 
         cpf = cpf.replace(/\D/g, '');
@@ -112,6 +113,7 @@
 
         $(this).val(cpf);
     });
+    
 
 })
 

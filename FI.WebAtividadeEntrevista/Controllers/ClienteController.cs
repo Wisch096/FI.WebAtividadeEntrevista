@@ -177,23 +177,48 @@ namespace WebAtividadeEntrevista.Controllers
         }
         
         [HttpPost]
-        public JsonResult AlterarBeneficiario(int clienteId, List<BeneficiariosModel> beneficiarios)
+        public JsonResult AlterarBeneficiario(BeneficiariosModel model)
+        {
+            BoBeneficiario bo = new BoBeneficiario();
+       
+            if (!this.ModelState.IsValid)
+            {
+                List<string> erros = (from item in ModelState.Values
+                    from error in item.Errors
+                    select error.ErrorMessage).ToList();
+
+                Response.StatusCode = 400;
+                return Json(string.Join(Environment.NewLine, erros));
+            }
+            else
+            {
+                bo.Alterar(new Beneficiario()
+                {
+                    Id = model.Id,
+                    Nome = model.Nome,
+                    CPF = model.CPF,
+                });
+                               
+                return Json(new { mensagem = "Cadastro alterado com sucesso" });
+            }
+        }
+        
+        [HttpPost]
+        public JsonResult ExcluirBeneficiario(int id)
         {
             BoBeneficiario bo = new BoBeneficiario();
 
-            foreach (var model in beneficiarios)
+            try
             {
-                    model.IdCliente = clienteId; 
-                    
-                    model.Id = bo.Incluir(new Beneficiario()
-                    {
-                        Nome = model.Nome,
-                        CPF = model.CPF,
-                        IdCliente = model.IdCliente 
-                    });
+                bo.Excluir(id); 
+                return Json(new { sucesso = true, mensagem = "Beneficiário excluído com sucesso" });
             }
-            return Json("Cadastro de beneficiários efetuado com sucesso");
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = $"Erro ao excluir o beneficiário: {ex.Message}" });
+            }
         }
+
       
     }
 }

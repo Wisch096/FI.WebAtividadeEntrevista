@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using FI.AtividadeEntrevista.BLL;
+using WebAtividadeEntrevista.Models;
 
 namespace FI.WebAtividadeEntrevista.Validations
 {
@@ -9,22 +10,26 @@ namespace FI.WebAtividadeEntrevista.Validations
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var bo = new BoCliente();
-            
+            var clienteModel = (ClienteModel)validationContext.ObjectInstance;
             var cpf = value as string;
-            
-            if (bo.VerificarExistencia(cpf))
-                return new ValidationResult("CPF já existe na base de dados.");
-            
+
             if (string.IsNullOrEmpty(cpf))
                 return new ValidationResult("CPF é obrigatório.");
-            
+
             cpf = cpf.Replace(".", "").Replace("-", "");
 
             if (cpf.Length != 11 || !cpf.All(char.IsDigit))
-                return new ValidationResult("CPF deve ter 11 digitos.");
+                return new ValidationResult("CPF deve ter 11 dígitos.");
 
             if (!CpfValido(cpf))
                 return new ValidationResult("CPF inválido.");
+
+            if (bo.VerificarExistencia(cpf))
+            {
+                var clienteExistente = bo.ObterClientePorCpf(cpf);
+                if (clienteExistente != null && clienteExistente.Id != clienteModel.Id)
+                    return new ValidationResult("CPF já existe na base de dados.");
+            }
 
             return ValidationResult.Success;
         }
