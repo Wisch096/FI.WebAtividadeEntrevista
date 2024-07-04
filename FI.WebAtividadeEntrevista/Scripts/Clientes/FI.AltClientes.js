@@ -51,7 +51,7 @@
             CPF: cpf,
             Nome: nome
         });
-        
+
         if (editandoBeneficiarioId != null) {
             $.ajax({
                 url: urlPostAlterarBeneficiario,
@@ -63,18 +63,8 @@
                     Nome: nome
                 }),
                 success: function (response) {
-                    var newRow = '<tr data-id="' + new Date().getTime() + '">' +
-                        '<td>' + cpf + '</td>' +
-                        '<td>' + nome + '</td>' +
-                        '<td>' +
-                        '<button class="btn btn-primary btn-alterar" data-id="' + new Date().getTime() + '">Alterar</button> ' +
-                        '<button class="btn btn-danger" data-id="' + new Date().getTime() + '">Excluir</button>' +
-                        '</td>' +
-                        '</tr>';
-                    $('.table tbody').append(newRow);
-
+                    adicionarBeneficiario(cpf, nome, new Date().getTime());
                     editandoBeneficiarioId = null;
-                    
                     $('#CPFBeneficiario').val('');
                     $('#NomeBeneficiario').val('');
                 },
@@ -83,16 +73,7 @@
                 }
             });
         } else {
-            var newRow = '<tr data-id="' + new Date().getTime() + '">' +
-                '<td>' + cpf + '</td>' +
-                '<td>' + nome + '</td>' +
-                '<td>' +
-                '<button class="btn btn-primary btn-alterar" data-id="' + new Date().getTime() + '">Alterar</button> ' +
-                '<button class="btn btn-danger" data-id="' + new Date().getTime() + '">Excluir</button>' +
-                '</td>' +
-                '</tr>';
-
-            $('.table tbody').append(newRow);
+            adicionarBeneficiario(cpf, nome, new Date().getTime());
         }
         $('#CPFBeneficiario').val('');
         $('#NomeBeneficiario').val('');
@@ -183,6 +164,18 @@
 
 });
 
+function adicionarBeneficiario(cpf, nome, id) {
+    var newRow = '<tr data-id="' + id + '">' +
+        '<td>' + cpf + '</td>' +
+        '<td>' + nome + '</td>' +
+        '<td>' +
+        '<button class="btn btn-primary btn-alterar" data-id="' + id + '">Alterar</button> ' +
+        '<button class="btn btn-danger" data-id="' + id + '">Excluir</button>' +
+        '</td>' +
+        '</tr>';
+    $('.table tbody').append(newRow);
+}
+
 function formatarCPF(cpf) {
     cpf = cpf.replace(/\D/g, '');
     if (cpf.length <= 11) {
@@ -192,7 +185,6 @@ function formatarCPF(cpf) {
     }
     return cpf;
 }
-
 
 
 function ModalDialog(titulo, texto) {

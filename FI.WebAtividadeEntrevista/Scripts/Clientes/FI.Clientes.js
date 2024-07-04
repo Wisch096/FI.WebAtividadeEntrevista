@@ -66,16 +66,7 @@
             Nome: nome
         });
 
-        var newRow = '<tr>' +
-            '<td>' + cpf + '</td>' +
-            '<td>' + nome + '</td>' +
-            '<td>' +
-            '<button class="btn btn-primary">Alterar</button> ' +
-            '<button class="btn btn-danger">Excluir</button>' +
-            '</td>' +
-            '</tr>';
-
-        $('.table tbody').append(newRow);
+        adicionarBeneficiario(cpf, nome, new Date().getTime());
         $("#formCadastroBenef")[0].reset();
 
     });
@@ -111,6 +102,18 @@
     });
 
 })
+
+function adicionarBeneficiario(cpf, nome, id) {
+    var newRow = '<tr data-id="' + id + '">' +
+        '<td>' + cpf + '</td>' +
+        '<td>' + nome + '</td>' +
+        '<td>' +
+        '<button class="btn btn-primary btn-alterar" data-id="' + id + '">Alterar</button> ' +
+        '<button class="btn btn-danger" data-id="' + id + '">Excluir</button>' +
+        '</td>' +
+        '</tr>';
+    $('.table tbody').append(newRow);
+}
 
 function formatarCPF(cpf) {
     cpf = cpf.replace(/\D/g, '');
